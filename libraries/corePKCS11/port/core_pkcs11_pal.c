@@ -466,6 +466,15 @@ void prvHandleToLabel( char ** pcLabel,
                 *pcLabel = ( char * ) pkcs11configLABEL_CODE_VERIFICATION_KEY;
                 break;
 
+            // @N2G: add missing labels
+            case eAwsClaimCertificate:
+                *pcLabel = ( char * ) pkcs11configLABEL_CLAIM_CERTIFICATE;
+                break;
+
+            case eAwsClaimPrivateKey:
+                *pcLabel = ( char * ) pkcs11configLABEL_CLAIM_PRIVATE_KEY;
+                break;
+                
             default:
                 *pcLabel = NULL;
                 break;
