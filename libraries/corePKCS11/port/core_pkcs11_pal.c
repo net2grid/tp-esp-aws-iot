@@ -108,6 +108,22 @@ static void initialize_nvs_partition()
         ESP_ERROR_CHECK(ret);
     } else {
 #endif // CONFIG_NVS_ENCRYPTION
+
+#ifdef MCU_ESP32
+      const esp_partition_t *prt = esp_partition_find_first(NVS_PART_TYPE,
+                                                            ESP_PARTITION_SUBTYPE_ANY,
+                                                            NVS_PART_NAME);
+
+      // Init using explicit partition pointer
+      esp_err_t err = nvs_flash_init_partition_ptr(prt);
+      if (err == ESP_ERR_NVS_NO_FREE_PAGES ||
+          err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        ESP_ERROR_CHECK(esp_partition_erase_range(prt, 0, prt->size));
+        err = nvs_flash_init_partition_ptr(prt);
+      }
+      ESP_ERROR_CHECK(err);
+
+#else // !MCU_ESP32
         esp_err_t ret = nvs_flash_init_partition(NVS_PART_NAME);
         if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
             ESP_LOGW(TAG, "Error initialising the NVS partition [%d]. Erasing the partition.", ret);
@@ -115,6 +131,9 @@ static void initialize_nvs_partition()
             ret = nvs_flash_init_partition(NVS_PART_NAME);
         }
         ESP_ERROR_CHECK(ret);
+
+#endif // MCU_ESP32
+
 #if CONFIG_NVS_ENCRYPTION
     }
 #endif // CONFIG_NVS_ENCRYPTION
