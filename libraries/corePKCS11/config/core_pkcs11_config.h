@@ -119,8 +119,11 @@
 #ifdef CONFIG_IDF_TARGET_ESP32
 #define pkcs11configSTORAGE_PARTITION   "n2grsv"
 #define NVS_PART_TYPE                   0x45
+#define NVS_PART_SUBTYPE                ESP_PARTITION_SUBTYPE_ANY
 #else
 #define pkcs11configSTORAGE_PARTITION   "nvs2"
+#define NVS_PART_TYPE                   ESP_PARTITION_TYPE_DATA
+#define NVS_PART_SUBTYPE                ESP_PARTITION_SUBTYPE_DATA_NVS
 #endif // CONFIG_IDF_TARGET_ESP32
 
 /**
