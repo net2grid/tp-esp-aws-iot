@@ -115,7 +115,16 @@
 /**
  * @brief ESP32 NVS Partition where PKCS #11 data is stored
  */
-#define pkcs11configSTORAGE_PARTITION  "storage"
+// @N2G: Change partition names.
+#ifdef CONFIG_IDF_TARGET_ESP32
+#define pkcs11configSTORAGE_PARTITION   "n2grsv"
+#define NVS_PART_TYPE                   0x45
+#define NVS_PART_SUBTYPE                ESP_PARTITION_SUBTYPE_ANY
+#else // ESP32S2, ESP32S3, ESP32C3, etc.
+#define pkcs11configSTORAGE_PARTITION   "data14"
+#define NVS_PART_TYPE                   0x45
+#define NVS_PART_SUBTYPE                (14)
+#endif // CONFIG_IDF_TARGET_ESP32
 
 /**
  * @brief ESP32 NVS namespace for PKCS #11 data

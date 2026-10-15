@@ -108,7 +108,15 @@ static void initialize_nvs_partition()
         ESP_ERROR_CHECK(ret);
     } else {
 #endif // CONFIG_NVS_ENCRYPTION
-        esp_err_t ret = nvs_flash_init_partition(NVS_PART_NAME);
+        // @N2G: Handle ESP32 partition table.
+        const esp_partition_t *prt = esp_partition_find_first(NVS_PART_TYPE,
+                                                              NVS_PART_SUBTYPE,
+                                                              NVS_PART_NAME);
+        if (prt == NULL) {
+            ESP_LOGE(TAG, "NVS partition \"%s\" not found", NVS_PART_NAME);
+            ESP_ERROR_CHECK(ESP_ERR_NOT_FOUND);
+        }
+        esp_err_t ret = nvs_flash_init_partition_ptr(prt);
         if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
             ESP_LOGE(TAG, "Error initialising the NVS partition [%d].", ret);
         }
